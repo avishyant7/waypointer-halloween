@@ -82,7 +82,7 @@ public final class WaypointerHalloweenClient implements ClientModInitializer {
         }
     }
 
-    private void setStatus(MinecraftClient client, String message) {
+    private void setStatus(Minecraft client, String message) {
         status = message;
         statusTicks = 100;
         if (client.player != null) client.player.displayClientMessage(Component.literal(message), true);
