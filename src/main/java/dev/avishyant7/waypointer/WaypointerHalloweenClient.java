@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.BlockPos;
 import org.lwjgl.glfw.GLFW;
 
@@ -43,7 +43,7 @@ public final class WaypointerHalloweenClient implements ClientModInitializer {
     private boolean hudVisible = true;
     private String status = "100 waypoints loaded";
     private int statusTicks;
-    private static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("waypointer_halloween", "controls"));
+    private static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("waypointer_halloween", "controls"));
 
     @Override
     public void onInitializeClient() {
@@ -85,7 +85,7 @@ public final class WaypointerHalloweenClient implements ClientModInitializer {
     private void setStatus(Minecraft client, String message) {
         status = message;
         statusTicks = 100;
-        if (client.player != null) client.player.displayClientMessage(Component.literal(message), true);
+        if (client.player != null) client.player.sendSystemMessage(Component.literal(message));
     }
 
     private static String coords(BlockPos p) { return p.getX() + " " + p.getY() + " " + p.getZ(); }
