@@ -2,15 +2,13 @@ package dev.avishyant7.waypointer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.KeyMapping;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -40,25 +38,25 @@ public final class WaypointerHalloweenClient implements ClientModInitializer {
         new BlockPos(-90,74,28),new BlockPos(-79,78,-3),new BlockPos(-86,74,-19),new BlockPos(-110,77,-21),new BlockPos(-113,78,-9)
     ));
 
-    private KeyBinding removeNearestKey;
-    private KeyBinding toggleHudKey;
+    private KeyMapping removeNearestKey;
+    private KeyMapping toggleHudKey;
     private boolean hudVisible = true;
     private String status = "100 waypoints loaded";
     private int statusTicks;
-    private static final KeyBinding.Category KEY_CATEGORY = KeyBinding.Category.create(Identifier.of("waypointer_halloween", "controls"));
+    private static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("waypointer_halloween", "controls"));
 
     @Override
     public void onInitializeClient() {
-        removeNearestKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.waypointer_halloween.remove_nearest", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_BACKSPACE,
+        removeNearestKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+            "key.waypointer_halloween.remove_nearest", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_BACKSPACE,
             KEY_CATEGORY));
         toggleHudKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.waypointer_halloween.toggle_hud", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H,
-            "category.waypointer_halloween.controls"));
+            KEY_CATEGORY));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (removeNearestKey.wasPressed()) removeNearest(client);
-            while (toggleHudKey.wasPressed()) {
+            while (removeNearestKey.consumeClick()) removeNearest(client);
+            while (toggleHudKey.consumeClick()) {
                 hudVisible = !hudVisible;
                 setStatus(client, hudVisible ? "Waypoint HUD enabled" : "Waypoint HUD hidden");
             }
@@ -66,14 +64,14 @@ public final class WaypointerHalloweenClient implements ClientModInitializer {
         });
     }
 
-    private void removeNearest(MinecraftClient client) {
+    private void removeNearest(Minecraft client) {
         if (client.player == null) return;
-        BlockPos playerPos = client.player.getBlockPos();
+        BlockPos playerPos = client.player.blockPosition();
         int nearestIndex = -1;
         double nearestDistance = Double.MAX_VALUE;
         for (int i = 0; i < WAYPOINTS.size(); i++) {
             BlockPos point = WAYPOINTS.get(i);
-            double distance = Math.sqrt(playerPos.getSquaredDistance(point));
+            double distance = Math.sqrt(playerPos.distSqr(point));
             if (distance < nearestDistance) { nearestDistance = distance; nearestIndex = i; }
         }
         if (nearestIndex >= 0 && nearestDistance <= 1.0) {
@@ -87,7 +85,7 @@ public final class WaypointerHalloweenClient implements ClientModInitializer {
     private void setStatus(MinecraftClient client, String message) {
         status = message;
         statusTicks = 100;
-        if (client.player != null) client.player.sendMessage(Text.literal(message), true);
+        if (client.player != null) client.player.displayClientMessage(Component.literal(message), true);
     }
 
     private static String coords(BlockPos p) { return p.getX() + " " + p.getY() + " " + p.getZ(); }
