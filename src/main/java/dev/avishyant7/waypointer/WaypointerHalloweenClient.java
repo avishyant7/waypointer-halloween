@@ -50,8 +50,8 @@ public final class WaypointerHalloweenClient implements ClientModInitializer {
         removeNearestKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             "key.waypointer_halloween.remove_nearest", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_BACKSPACE,
             KEY_CATEGORY));
-        toggleHudKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.waypointer_halloween.toggle_hud", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H,
+        toggleHudKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+            "key.waypointer_halloween.toggle_hud", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H,
             KEY_CATEGORY));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
