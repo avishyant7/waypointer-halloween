@@ -8,6 +8,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
@@ -44,12 +45,13 @@ public final class WaypointerHalloweenClient implements ClientModInitializer {
     private boolean hudVisible = true;
     private String status = "100 waypoints loaded";
     private int statusTicks;
+    private static final KeyBinding.Category KEY_CATEGORY = KeyBinding.Category.create(Identifier.of("waypointer_halloween", "controls"));
 
     @Override
     public void onInitializeClient() {
         removeNearestKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.waypointer_halloween.remove_nearest", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_BACKSPACE,
-            "category.waypointer_halloween.controls"));
+            KEY_CATEGORY));
         toggleHudKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.waypointer_halloween.toggle_hud", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H,
             "category.waypointer_halloween.controls"));
