@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "waypointer_halloween",
+  "version": "${version}",
+  "name": "Waypointer Halloween",
+  "description": "A 100-point coordinate waypoint helper with nearest-waypoint removal.",
+  "authors": ["Avishyant7"],
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.avishyant7.waypointer.WaypointerHalloweenClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.0",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
